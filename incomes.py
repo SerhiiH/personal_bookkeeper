@@ -1,5 +1,8 @@
-from record import Record
-
-class Incomes(Record):
-	def __init__(self, name, amount=0, currency='UAH'):
-		Record.__init__(self, 'Incomes', name, amount)
+class Incomes:
+	family = ['Serhii', 'Alona']
+	
+	def __init__(self):
+		self.incomes = {k: Record() for k in Incomes.persons}
+	def __iter__(self):
+		for person in self.incomes.items():
+			yield person
