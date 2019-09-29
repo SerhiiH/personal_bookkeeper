@@ -1,4 +1,4 @@
-from record_class import Record
+from record import Record
 
 class Expenses(Record):
 	def __init__(self, amount=0, type=''):
