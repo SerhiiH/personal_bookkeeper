@@ -20,9 +20,7 @@ class Savings:
 	def __repr__(self):
 		string = ''
 		for k1,v1 in self.savings.items():
-			string += '\n\t{0}\n'.format(k1 + ':')
+			string += '\n{0}\n'.format(k1 + ':')
 			for k2,v2 in v1.items():
-				string += '\t\t{0} {1}\n'.format(k2 + ':', v2)
-		return 'Savings' + string
-		
-sav = Savings()
+				string += '\t{0} {1}\n'.format(k2 + ':', v2)
+		return 'Savings'.center(30, '-') + string + '\n'

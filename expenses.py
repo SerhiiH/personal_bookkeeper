@@ -19,9 +19,9 @@ class Expenses:
 	def __repr__(self):
 		string = ''
 		for k,v in self.expenses.items():
-			string += '\t{0:15}UAH {1:,}\n'.format(k + ':', v) 
-		string += '\t{0:15}UAH {1:,}\n'.format('Total:', self._total)
-		return 'Expenses:\n' + string
+			string += '{0:15}UAH {1:,}\n'.format(k + ':', v) 
+		string += '{0:15}UAH {1:,}\n'.format('Total:', self._total)
+		return 'Expenses:'.center(30, '-') + '\n' + string + '\n'
 		
 	@property
 	def total(self):
@@ -29,5 +29,3 @@ class Expenses:
 	@total.setter
 	def total(self, val):
 		self._total = val
-			
-exp = Expenses()

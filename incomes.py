@@ -19,9 +19,9 @@ class Incomes:
 	def __repr__(self):
 		string = ''
 		for k,v in self.incomes.items():
-			string += '\t{0:15}UAH {1:,}\n'.format(k + ':', v)
-		string += '\t{0:15}UAH {1:,}\n'.format('Total:', self._total)
-		return 'Incomes:\n' + string
+			string += '{0:15}UAH {1:,}\n'.format(k + ':', v)
+		string += '{0:15}UAH {1:,}\n'.format('Total:', self._total)
+		return 'Incomes:'.center(30, '-') + '\n' + string + '\n'
 		
 	@property
 	def total(self):
@@ -29,5 +29,3 @@ class Incomes:
 	@total.setter
 	def total(self, val):
 		self._total = val
-	
-inc = Incomes()
