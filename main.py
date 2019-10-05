@@ -1,8 +1,16 @@
-from expenses import Expenses
-from incomes import Incomes
-from savings import Savings
+from month import Month
 
-incomes = Incomes()
-expenses = Expenses()
-savings = Savings()
 
+
+
+def communicate():
+	global action
+	action = input('Say what to do ("q" - quit): ')
+	
+commands = {'new_total': newTotal, 'new_month': newMonth, 
+			'input_total': inputTotal, 'input_current': inputCurrent, 
+			'show_total': showTotal, 'show_current': showCurrent, 'q': quit}
+
+if __name__ == '__main__':
+	communicate()
+	print(action)

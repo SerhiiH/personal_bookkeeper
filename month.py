@@ -14,4 +14,5 @@ class Month:
 		return self.__items[key.lower()]
 
 		
-m = Month('October 2019')
+if __name__ == '__main__':
+	m = Month('October 2019')
