@@ -4,14 +4,14 @@ from savings import Savings
 
 class Month:
 	def __init__(self, name):
-		self.__items = {'e': Expenses(), 'i': Incomes(), 's': Savings()}
-		self.__name = name
+		self.items = {'e': Expenses(), 'i': Incomes(), 's': Savings()}
+		self.name = name
 		
 	def __repr__(self):
-		return self.__name.upper().center(30, ' ') + '\n' + str(self.__items['i']) + str(self.__items['e']) + str(self.__items['s']) 
+		return self.name.upper().center(30, ' ') + '\n' + str(self.items['i']) + str(self.items['e']) + str(self.items['s']) 
 
 	def __getitem__(self, key):
-		return self.__items[key.lower()]
+		return self.items[key.lower()]
 
 		
 if __name__ == '__main__':
