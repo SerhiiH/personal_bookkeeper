@@ -6,7 +6,7 @@ class Incomes:
 		self._total = 0
 	
 	def __getitem__(self, key):
-		return self.incomes[person.key()]
+		return self.incomes[key.lower()]
 		
 	def __setitem__(self, key, val):
 		key = key.lower()

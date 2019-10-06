@@ -54,30 +54,14 @@ def inputTotal(*args):
 		except KeyError:
 			print('"Total Savings" record must be created before filling in.')
 			return
-	
-	if len(args) < 3:
-		print('Not full input')
-		return
-		
-	savingsItem = args[0]
-	savingsCurrency = args[1]
-	savingsAmount = args[2]
-	
 	try:
-		savingsAmount = float(savingsAmount)
-	except ValueError:
-		print('ERROR!!! Incorrect amount format.')
+		savingsItem = args[0]
+		savingsCurrency = args[1]
+		amount = float(args[2])
+		totalSavings[savingsItem][savingsCurrency] = amount
+	except (ValueError, IndexError, KeyError):
+		print('ERROR!!! Incorrect input.')
 		return
-		
-	if not savingsItem in Savings.items:
-		print('ERROR!!! Incorrect Savings item.')
-		return
-		
-	if not savingsCurrency in Savings.currencies:
-		print('ERROR!!! Incorrect currency.')
-		return
-		
-	totalSavings[savingsItem][savingsCurrency] = savingsAmount
 	
 def inputCurrent(*args):
 	global currentMonth
@@ -90,12 +74,46 @@ def inputCurrent(*args):
 			print('"Current Month" record must be created before filling in.')
 			return
 	
+	if not totalSavings:
+		try:
+			totalSavings = db['total']
+		except KeyError:
+			print('"Total Savings" record must be created before filling in.')
+			return
 	
-	
-	
-	
-	
-	
+	try:
+		monthSection = args[0]
+		sectionItem = args[1]
+		
+		if monthSection in ['expenses', 'incomes']:
+			amount = float(args[2])
+			currentMonth[monthSection][sectionItem] += amount
+			if monthSection == 'expenses':
+				currentMonth['savings']['pocket money']['uah'] -= amount
+				totalSavings['pocket money']['uah'] -= amount
+			else:
+				currentMonth['savings']['pocket money']['uah'] += amount
+				totalSavings['pocket money']['uah'] += amount
+		else:
+			targetCurrency = args[2]
+			targetAmount = float(args[3])
+			source = args[4]
+			sourceCurrency = ''
+			sourceAmount = 0
+			if len(args) > 5:
+				sourceCurrency = args[5]
+				sourceAmount = float(args[6])
+			else:
+				sourceCurrency = targetCurrency
+				sourceAmount = targetAmount
+			currentMonth[monthSection][sectionItem][targetCurrency] += targetAmount
+			totalSavings[sectionItem][targetCurrency] += targetAmount
+			currentMonth[monthSection][source][sourceCurrency] -= sourceAmount
+			totalSavings[source][sourceCurrency] -= sourceAmount
+	except (ValueError, IndexError, KeyError):
+		print('ERROR!!! Incorrect input.')
+		return
+
 def showTotal():
 	if totalSavings:
 		print(totalSavings)
@@ -115,10 +133,12 @@ def showCurrent():
 			print('"Current Month" record must be created before being shown.')
 
 def openDB():
+	print('Starting runtime...')
 	global db
 	db = shelve.open('filedb')	
 
 def closeDB():
+	print('Finishing runtime...')
 	if totalSavings:
 		db['total'] = totalSavings
 	if currentMonth:
@@ -131,8 +151,9 @@ def communicate():
 		processRequest(request)
 		request = prompt('Enter the record ("q" - quit): ')	
 
+	
 commands = {'new total': newTotal, 'new month': newMonth, 'input total': inputTotal, 
-			'input current': inputCurrent, 'show total': showTotal, 'show current': showCurrent}
+			'input month': inputCurrent, 'show total': showTotal, 'show month': showCurrent}
 
 if __name__ == '__main__':
 	start()
