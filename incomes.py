@@ -24,9 +24,3 @@ class Incomes:
 		string += '{0:15}UAH {1:,}\n'.format('Total:', self._total)
 		return 'Incomes:'.center(30, '-') + '\n' + string + '\n'
 		
-	@property
-	def total(self):
-		return self._total
-	@total.setter
-	def total(self, val):
-		self._total = val

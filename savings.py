@@ -18,7 +18,7 @@ class Savings:
 		for k1,v1 in self.savings.items():
 			string += '\n{0}\n'.format(k1.capitalize() + ':')
 			for k2,v2 in v1.items():
-				string += '{0:>19} {1}\n'.format(k2.upper() + ':', v2)
+				string += '{0:>19} {1:,}\n'.format(k2.upper() + ':', v2)
 		return 'Savings'.center(30, '-') + string + '\n'
 
 

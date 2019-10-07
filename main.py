@@ -84,16 +84,25 @@ def inputCurrent(*args):
 	try:
 		monthSection = args[0]
 		sectionItem = args[1]
+		amount = 0
+		currency = 'uah'
+		correspondingSaving = 'pocket money'
 		
-		if monthSection in ['expenses', 'incomes']:
+		if monthSection == 'expenses':
+			if sectionItem == 'travelling':
+				currency = args[2]
+				amount = float(args[3])
+				correspondingSaving = sectionItem
+			else:
+				amount = float(args[2])
+			currentMonth[monthSection][sectionItem] += amount
+			currentMonth['savings'][correspondingSaving][currency] -= amount
+			totalSavings[correspondingSaving][currency] -= amount
+		elif monthSection == 'incomes':
 			amount = float(args[2])
 			currentMonth[monthSection][sectionItem] += amount
-			if monthSection == 'expenses':
-				currentMonth['savings']['pocket money']['uah'] -= amount
-				totalSavings['pocket money']['uah'] -= amount
-			else:
-				currentMonth['savings']['pocket money']['uah'] += amount
-				totalSavings['pocket money']['uah'] += amount
+			currentMonth['savings'][correspondingSaving][currency] += amount
+			totalSavings[correspondingSaving][currency] += amount
 		else:
 			targetCurrency = args[2]
 			targetAmount = float(args[3])
