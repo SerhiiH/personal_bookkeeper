@@ -1,26 +1,30 @@
-class Incomes:
-	family = ['serhii', 'alona']
-	
+from month_item import MonthItem
+
+class Incomes(MonthItem):
 	def __init__(self):
-		self.incomes = {k: 0 for k in Incomes.family}
-		self._total = 0
+		MonthItem.__init__(self, self.__class__.__name__)
+		self.total = 0
 	
-	def __getitem__(self, key):
-		return self.incomes[key.lower()]
-		
-	def __setitem__(self, key, val):
-		key = key.lower()
-		self._total += val - self.incomes[key]
-		self.incomes[key] = val
-	
-	def __iter__(self):
-		for person in self.incomes.items():
-			yield person
-			
 	def __repr__(self):
-		string = ''
-		for k,v in self.incomes.items():
-			string += '{0:15}UAH {1:,}\n'.format(k.capitalize() + ':', v)
-		string += '{0:15}UAH {1:,}\n'.format('Total:', self._total)
-		return 'Incomes:'.center(30, '-') + '\n' + string + '\n'
-		
+		return MonthItem.__repr__(self) + '\n{0:13} UAH: {1:,}\n'.format('TOTAL:', self.total)		
+
+	def changeItemAmount(self, item, amount, currency = 'uah', sign = 1):
+		MonthItem.changeItemAmount(self, item, currency, amount)
+
+		try:
+			self.total += float(amount) * sign
+		except:
+			print('ERROR!!! Incorrect input.')
+			return
+				
+				
+if __name__ == '__main__':
+	inc = Incomes()
+	inc.addItem('Serhii', 'uah', correspondingItem = 'wallet')
+	inc.addItem('Alona', 'uah', correspondingItem = 'wallet')
+	print(inc)
+	
+	inc.changeItemAmount('serhii', 1000000)
+	inc.changeItemAmount('alona', 1100000)
+	print(inc)
+	

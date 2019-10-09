@@ -12,10 +12,7 @@ class Item:
 			yield value 
 		
 	def changeAmount(self, currency, amount, sign = 1):
-		try:
-			self.amount[currency] += amount * sign
-		except KeyError:
-			print('ERROR!!! Incorrect currency.')
+		self.amount[currency] += amount * sign
 			
 	def getCorrespondingItem(self):
 		return self.correspondingItem

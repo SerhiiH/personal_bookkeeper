@@ -6,20 +6,29 @@ class Expenses(MonthItem):
 		self.total = 0
 	
 	def __repr__(self):
-		return MonthItem.__repr__(self) + '{0:31} UAH: {1:,}\n'.format('TOTAL:', self.total)
+		return MonthItem.__repr__(self) + '\n{0:13} UAH: {1:,}\n'.format('TOTAL:', self.total)
 		
-	def changeAmount(self, item, currency, amount, sign = 1):
-		MonthItem.changeItemAmount(self, item, currency, amount, sign)
+	def changeItemAmount(self, item, amount, currency = 'uah', sign = 1):
+		MonthItem.changeItemAmount(self, item, currency, amount)
 
 		try:
-			if self.itemsSources[item.lower()] == 'wallet':
+			if self.getItemCorrespondingItem(item) == 'wallet' and currency == 'uah':
 				self.total += float(amount) * sign
-	
-
+		except:
+			print('ERROR!!! Incorrect input.')
+			return
+				
+				
 if __name__ == '__main__':
 	exp = Expenses()
-	exp.addItem('Rent', 'uah')
-	exp.addItem('TRAVELLING', 'uah', 'usd', 'eur', source = 'travelling')
-	exp.addItem('FooD', 'uah')
+	exp.addItem('Rent', 'uah', correspondingItem = 'wallet')
+	exp.addItem('TRAVELLING', 'uah', 'usd', 'eur', correspondingItem = 'travelling')
+	exp.addItem('FooD', 'uah', correspondingItem = 'wallet')
+	print(exp)
 	
+	exp.changeItemAmount('rent', 300)
+	exp.changeItemAmount('travelling', 300, 'usd')
+	exp.changeItemAmount('travelling', 300)
+	exp.changeItemAmount('rent', 300)
+	exp.changeItemAmount('food', 300)
 	print(exp)

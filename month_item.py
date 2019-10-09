@@ -36,13 +36,16 @@ class MonthItem():
 			amount = float(amount)
 			self.itemTypes[item].changeAmount(currency, amount, sign)
 		except KeyError:
-			print('ERROR!!! Incorrect Item name.')
+			print('ERROR!!! Incorrect Item or Currency name.')
 			return
 		except ValueError:
 			print('ERROR!!! Incorrect amount format.')
 			return
+		except:
+			print('ERROR!!! Incorrect arguments order.')
+			return
 	
-	def getItemCorrespingItem(self, item):
+	def getItemCorrespondingItem(self, item):
 		try:
 			return self.itemTypes[item.lower()].getCorrespondingItem()
 		except KeyError:
@@ -57,18 +60,23 @@ if __name__ == '__main__':
 	mi.addItem('FooD', 'uah', correspondingItem = 'wallet')
 	print(mi)
 	print(''.center(30, '*'))
+	
 	mi.changeItemAmount('rent', 'uah', 1000)
 	print(mi)
 	print(''.center(30, '*'))
+	
 	mi.changeItemAmount('rent', 'uah', 500, -1)
 	print(mi)
 	print(''.center(30, '*'))
+	
 	mi.changeItemAmount('rent', 'usd', 500)
 	print(mi)
 	print(''.center(30, '*'))
+	
 	mi.changeItemAmount('bikes', 'uah', 500)
 	print(mi)
 	print(''.center(30, '*'))
+	
 	mi.changeItemAmount('rent', 'uah', '541-')
 	print(mi)
 	print(''.center(30, '*'))
