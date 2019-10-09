@@ -1,42 +1,25 @@
-class Expenses:
-	items = ['rent', 'food', 'other', 'travelling']
-	currencies = ['uah', 'usd', 'eur']
-	
+from month_item import MonthItem
+
+class Expenses(MonthItem):
 	def __init__(self):
-		self.expenses = {k: {'uah': 0} for k in Expenses.items}
-		self.expenses['travelling'] = {currency: 0 for currency in Expenses.currencies}
-		self._total = 0
+		MonthItem.__init__(self, self.__class__.__name__)
+		self.total = 0
 	
-	def __getitem__(self, key):
-		return self.expenses[key.lower()]
-		
-	def __setitem__(self, key, val):
-		key = key.lower()
-		tmpAmount = self.expenses[key]
-		self.expenses[key] = val
-		if key != 'travelling':
-			self._total += val - tmpAmount
-	
-	def __iter__(self):
-		for item in self.expenses.items():
-			yield item
-			
 	def __repr__(self):
-		string = ''
-		for k1,v1 in self.expenses.items():
-			string += '\n{0}\n'.format(k1.capitalize() + ':')
-			for k2,v2 in v1.items():
-				string += '{0:>19} {1:,}\n'.format(k2.upper() + ':', v2)
-		string += '\n{0:15}UAH {1:,}\n'.format('Total:', self._total)
-		return 'Expenses:'.center(30, '-') + string + '\n'
+		return MonthItem.__repr__(self) + '{0:31} UAH: {1:,}\n'.format('TOTAL:', self.total)
 		
-	@property
-	def total(self):
-		return self._total
-	@total.setter
-	def total(self, val):
-		self._total = val
+	def changeAmount(self, item, currency, amount, sign = 1):
+		MonthItem.changeItemAmount(self, item, currency, amount, sign)
+
+		try:
+			if self.itemsSources[item.lower()] == 'wallet':
+				self.total += float(amount) * sign
+	
 
 if __name__ == '__main__':
 	exp = Expenses()
+	exp.addItem('Rent', 'uah')
+	exp.addItem('TRAVELLING', 'uah', 'usd', 'eur', source = 'travelling')
+	exp.addItem('FooD', 'uah')
+	
 	print(exp)
