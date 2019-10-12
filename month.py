@@ -1,17 +1,25 @@
 from expenses import Expenses
 from incomes import Incomes
-from savings import Savings
+from liabilities import Liabilities
 
 class Month:
 	def __init__(self, name):
-		self.items = {'expenses': Expenses(), 'incomes': Incomes(), 'savings': Savings()}
-		self.name = name
+		self.monthItems = {'expenses': Expenses(), 'incomes': Incomes(), 'liabilities': Liabilities()}
+		self.name = name.casefold()
 		
 	def __repr__(self):
-		return self.name.upper().center(30, ' ') + '\n' + str(self.items['incomes']) + str(self.items['expenses']) + str(self.items['savings']) 
+		return self.name.upper().center(30, ' ') + '\n' + str(self.items['incomes']) + str(self.items['expenses']) + str(self.items['liabilities']) 
 
-	def __getitem__(self, key):
-		return self.items[key.lower()]
+	def getMonthItem(self, monthItem):
+		try:
+			return self.monthItems[monthItem.casefold()]
+		except KeyError:
+			print('ERROR!!! Incorrect Month item name.')
+			return
+	
+
+
+
 
 		
 if __name__ == '__main__':

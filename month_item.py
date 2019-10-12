@@ -8,46 +8,50 @@ class MonthItem():
 	def __repr__(self):
 		string = ''.join([str(item) for item in filter(lambda x: x.getCorrespondingItem() == 'wallet', self.itemTypes.values())])
 		string += ''.join([str(item) for item in filter(lambda x: x.getCorrespondingItem() != 'wallet', self.itemTypes.values())])
-		return self.name.capitalize().center(30, '-') + '\n' + string
+		return '\n' + self.name.capitalize().center(30, '-') + '\n' + string
 		
 	def __iter__(self):
 		for item in self.itemTypes.values():
-			for value in item:
-				yield value
+			yield item
 
 	def addItem(self, name, *currencies, correspondingItem = ''):
-		name = name.lower()
-		currencies = [curr.lower() for curr in currencies]
-		correspondingItem = correspondingItem.lower()
+		name = name.casefold()
 		self.itemTypes[name] = Item(name, currencies, correspondingItem)
 		
-	def deleteItem(self, item):
+	def addItemCurrency(self, item, currency):
 		try:
-			item = item.lower()
-			del self.itemTypes[item]
+			self.itemTypes[item.casefold()].addCurrency(currency)
 		except KeyError:
 			print('ERROR!!! Incorrect Item name.')
 			return
 		
-	def changeItemAmount(self, item, currency, amount, sign = 1):
+	def deleteItem(self, item):
 		try:
-			item = item.lower()
-			currency = currency.lower()
-			amount = float(amount)
-			self.itemTypes[item].changeAmount(currency, amount, sign)
+			del self.itemTypes[item.casefold()]
 		except KeyError:
-			print('ERROR!!! Incorrect Item or Currency name.')
+			print('ERROR!!! Incorrect Item name.')
 			return
-		except ValueError:
-			print('ERROR!!! Incorrect amount format.')
+			
+	def deleteItemCurrency(self, item, currency):
+		try:
+			self.itemTypes[item.casefold()].deleteCurrency(currency)
+		except KeyError:
+			print('ERROR!!! Incorrect Item name.')
+			return
+		
+	def changeItemAmount(self, item, amount, currency = 'uah', sign = 1):
+		try:
+			self.itemTypes[item.casefold()].changeAmount(currency, amount, sign)
+		except KeyError:
+			print('ERROR!!! Incorrect Item name.')
 			return
 		except:
-			print('ERROR!!! Incorrect arguments order.')
+			print('ERROR!!! Incorrect input.')
 			return
 	
 	def getItemCorrespondingItem(self, item):
 		try:
-			return self.itemTypes[item.lower()].getCorrespondingItem()
+			return self.itemTypes[item.casefold()].getCorrespondingItem()
 		except KeyError:
 			print('ERROR!!! Incorrect Item name.')
 			return
@@ -85,7 +89,7 @@ if __name__ == '__main__':
 	print(mi)
 	print(''.center(30, '*'))
 	
-	print(mi.getItemCorrespingItem('FOOD'))
+	print(mi.getItemCorrespondingItem('FOOD'))
 	print(''.center(30, '*'))
 	
 	for it in mi:
