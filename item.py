@@ -23,7 +23,7 @@ class Item:
 			curr = currency.casefold()
 			value = float(amount)
 			self.amount[curr] += value
-		f.execWithException(self.changeAmount.__name__, func, KeyError, ValueError)
+		f.execWithException(self.changeAmount, func, KeyError, ValueError)
 			
 	def getCorrespondItem(self):
 		return self.correspondItem
@@ -35,7 +35,7 @@ class Item:
 		self.amount[currency.casefold()] = 0
 		
 	def deleteCurrency(self, currency):
-		f.execWithException(self.deleteCurrency.__name__, lambda: self.amount.pop(currency.casefold()), KeyError)
+		f.execWithException(self.deleteCurrency, lambda: self.amount.pop(currency.casefold()), KeyError)
 		
 		
 

@@ -1,4 +1,5 @@
 from item import Item
+import functions as f
 
 class MonthItem():
 	def __init__(self, name, itemTypesList):
@@ -20,36 +21,21 @@ class MonthItem():
 		self.itemTypes[itemType.name] = Item(itemType.name, itemType.currency, itemType.correspondItem)
 		
 	def addItemCurrency(self, item, currency):
-		try:
-			self.itemTypes[item.casefold()].addCurrency(currency)
-		except KeyError:
-			print('ERROR in month_item.py!!! Incorrect Item name.')
-			return
+		f.execWithException(self.addItemCurrency, lambda: self.itemTypes[item.casefold()].addCurrency(currency), KeyError)
 		
 	def deleteItem(self, item):
-		try:
-			del self.itemTypes[item.casefold()]
-		except KeyError:
-			print('ERROR in month_item.py!!! Incorrect Item name.')
-			return
+		f.execWithException(self.deleteItem, lambda: self.itemTypes.pop(item.casefold()), KeyError)
 			
 	def deleteItemCurrency(self, item, currency):
-		try:
-			self.itemTypes[item.casefold()].deleteCurrency(currency)
-		except KeyError:
-			print('ERROR in month_item.py!!! Incorrect Item name.')
-			return
-		
+		f.execWithException(self.deleteItemCurrency, lambda: self.itemTypes[item.casefold()].deleteCurrency(currency), KeyError)
+
 	def changeItemAmount(self, item, amount, currency):
 		try:
 			self.itemTypes[item.casefold()].changeAmount(currency, amount)
 		except KeyError:
 			print('ERROR in month_item.py!!! Incorrect Item name.')
 			return
-		# except:
-			# print('ERROR in month_item.py!!! Incorrect input.')
-			# return
-	
+
 	def getItemCorrespondItem(self, item):
 		try:
 			return self.itemTypes[item.casefold()].getCorrespondItem()
