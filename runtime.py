@@ -1,7 +1,7 @@
 from month import Month
 from liabilities import Liabilities
 from item_type import ItemType
-
+import functions as f
 
 class Runtime:
 	def __init__(self):
@@ -22,22 +22,6 @@ class Runtime:
 			'deposit': ItemType('Deposit', '', 'UAH', 'USD', 'EUR')
 			}
 		}
-		
-		self.expensesItems = {
-			'rent': ItemType('Rent', 'Wallet', 'UAH'), 
-			'food': ItemType('Food', 'Wallet', 'UAH'), 
-			'pocket money': ItemType('Pocket money', 'Wallet', 'UAH'),
-			'travelling': ItemType('Travelling', 'Travelling', 'UAH')
-			}
-		self.incomesItems = {
-			'serhii': ItemType('Serhii', 'Wallet', 'UAH'),
-			'alona': ItemType('Alona', 'Wallet', 'UAH')
-		}
-		self.liabilitiesItems = {
-			'wallet': ItemType('Wallet', '', 'UAH', 'USD', 'EUR'),
-			'travelling': ItemType('Travelling', '', 'UAH', 'USD', 'EUR'),
-			'deposit': ItemType('Deposit', '', 'UAH', 'USD', 'EUR')
-		}
 		self.currentMonth = None
 		self.totalLiabilities = None
 		self.monthHistory = {}
@@ -50,7 +34,7 @@ class Runtime:
 	
 	def prepare(self):
 		if not self.totalLiabilities:
-			self.totalLiabilities = Liabilities(self.getItemTypesGroup('liabilities').values())
+			self.totalLiabilities = Liabilities(self.getItemsTypesGroup('liabilities').values())
 
 	def communicate(self):
 		request = input('Enter the request ("q" - quit): ')
@@ -60,18 +44,20 @@ class Runtime:
 	
 	def processRequest(self, requestString):
 		args = [arg.strip().casefold() for arg in requestString.split(',')]
-				
-		try:
+		
+		def func():
 			if len(args) > 1:
 				self.commands[args[0]](*args[1:])
 			else:
 				self.commands[args[0]]()
+			
+		try:
+			f.execWithException(self.processRequest, func, KeyError)
 		except KeyError:
-			print('ERROR in runtime.py!!! Incorrect command.')
 			return
 		
 	def newTotal(self):
-		self.totalLiabilities = Liabilities(self.getItemTypesGroup('liabilities').values())
+		self.totalLiabilities = Liabilities(self.getItemsTypesGroup('liabilities').values())
 		
 	def newMonth(self, *args):
 		if not args:
@@ -81,22 +67,23 @@ class Runtime:
 		if self.currentMonth:
 			self.monthHistory.append(self.currentMonth) 
 		
-		self.currentMonth = Month(args[0], self.getItemTypesGroup('expenses').values(), self.getItemTypesGroup('incomes').values(), 
-			self.getItemTypesGroup('liabilities').values())
+		self.currentMonth = Month(args[0], self.getItemsTypesGroup('expenses').values(), self.getItemsTypesGroup('incomes').values(), 
+			self.getItemsTypesGroup('liabilities').values())
 
 	def inputTotal(self, *args):
-		try:
-			liabilityItem = args[0]
-			# amount = float(args[1])
+		def func():
+			item = args[0]
 			amount = args[1]
 			if len(args) == 2:
-				liabilityCurrency = 'uah'
+				currency = 'uah'
 			else:
-				liabilityCurrency = args[2]
+				currency = args[2]
 				
-			self.totalLiabilities.changeItemAmount(liabilityItem, amount, liabilityCurrency)
-		except (ValueError, IndexError, KeyError):
-			print('ERROR in runtime.py!!! Incorrect input.')
+			self.totalLiabilities.changeItemAmount(item, amount, currency)
+			
+		try:
+			f.execWithException(self.inputTotal, func, ValueError, KeyError, IndexError)
+		except (ValueError, KeyError, IndexError):
 			return
 		
 	def inputCurrent(self, *args):
@@ -104,7 +91,7 @@ class Runtime:
 			print('"Current Month" record must be created before filling in.')
 			return
 		
-		try:
+		def func():
 			itemsGroupName = args[0]
 			itemName = args[1]
 			amount = float(args[2])
@@ -126,8 +113,10 @@ class Runtime:
 			
 			if itemsGroupName.casefold() == 'liabilities':
 				self.totalLiabilities.changeItemAmount(itemName, amount, currency)
+		
+		try:
+			f.execWithException(self.inputCurrent, func, ValueError, IndexError, KeyError)
 		except (ValueError, IndexError, KeyError):
-			print('ERROR in runtime.py!!! Incorrect input.')
 			return
 
 	def showTotal(self):
@@ -142,10 +131,9 @@ class Runtime:
 		else:
 			print('"Current Month" record must be created before being shown.')
 
-	def getItemTypesGroup(self, itemTypesGroup):
-		return self.itemsTypesCollection[itemTypesGroup.casefold()]
+	def getItemsTypesGroup(self, itemsTypesGroup):
+		return self.itemsTypesCollection[itemsTypesGroup.casefold()]
 
-	# def addItemType(self, itemsGroup, itemName, itemCorrespondItem, *itemCurrencies):
 		
 
 
@@ -153,4 +141,3 @@ class Runtime:
 if __name__ == '__main__':
 	r = Runtime()
 	r.run()
-

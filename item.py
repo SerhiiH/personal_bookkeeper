@@ -40,10 +40,4 @@ class Item:
 		
 
 if __name__ == '__main__':
-	r = Item('rent', ['uah', 'usd', 'eur'], correspondItem = 'wallet')
-	print(r)
-	r.changeAmount('usd', 200)
-	print(r)
-	r.changeAmount('usd', '3e')
-	print(r)
-	
+	pass
