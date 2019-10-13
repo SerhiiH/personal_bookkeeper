@@ -30,18 +30,10 @@ class MonthItem():
 		f.execWithException(self.deleteItemCurrency, lambda: self.itemTypes[item.casefold()].deleteCurrency(currency), KeyError)
 
 	def changeItemAmount(self, item, amount, currency):
-		try:
-			self.itemTypes[item.casefold()].changeAmount(currency, amount)
-		except KeyError:
-			print('ERROR in month_item.py!!! Incorrect Item name.')
-			return
+		f.execWithException(self.changeItemAmount, lambda: self.itemTypes[item.casefold()].changeAmount(currency, amount), KeyError)
 
 	def getItemCorrespondItem(self, item):
-		try:
-			return self.itemTypes[item.casefold()].getCorrespondItem()
-		except KeyError:
-			print('ERROR in month_item.py!!! Incorrect Item name.')
-			return
+		f.execWithException(self.getItemCorrespondItem, lambda: self.itemTypes[item.casefold()].getCorrespondItem(), KeyError)
 		
 		
 if __name__ == '__main__':
