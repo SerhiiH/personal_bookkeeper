@@ -1,7 +1,7 @@
 def execWithException(encloseScopeName, func, *exceptions):
 	try:
 		func()
-	except excpetions as err:
+	except exceptions as err:
 		print('ERROR in {0}!!! Incorrect input.'.format(encloseScopeName))
 		
 		

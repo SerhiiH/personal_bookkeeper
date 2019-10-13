@@ -46,9 +46,9 @@ class MonthItem():
 		except KeyError:
 			print('ERROR in month_item.py!!! Incorrect Item name.')
 			return
-		except:
-			print('ERROR in month_item.py!!! Incorrect input.')
-			return
+		# except:
+			# print('ERROR in month_item.py!!! Incorrect input.')
+			# return
 	
 	def getItemCorrespondItem(self, item):
 		try:

@@ -1,3 +1,6 @@
+import functions as f
+
+
 class Item:
 	def __init__(self, name, currencies, correspondItem):
 		name = name
@@ -16,19 +19,11 @@ class Item:
 			yield value 
 		
 	def changeAmount(self, currency, amount):
-		try:
-			currency = currency.casefold()
-			amount = float(amount)
-			self.amount[currency] += amount
-		except KeyError:
-			print('ERROR in item.py!!! Incorrect Currency name.')
-			return
-		except ValueError:
-			print('ERROR  in item.py!!! Incorrect amount format.')
-			return
-		except:
-			print('ERROR in item.py!!! Incorrect input.')
-			return		
+		def func():
+			curr = currency.casefold()
+			value = float(amount)
+			self.amount[curr] += value
+		f.execWithException(self.changeAmount.__name__, func, KeyError, ValueError)
 			
 	def getCorrespondItem(self):
 		return self.correspondItem
@@ -40,19 +35,15 @@ class Item:
 		self.amount[currency.casefold()] = 0
 		
 	def deleteCurrency(self, currency):
-		try:
-			del self.amount[currency.casefold()]
-		except KeyError:
-			print('ERROR in item.py!!! Incorrect Currency name.')
-			return
+		f.execWithException(self.deleteCurrency.__name__, lambda: self.amount.pop(currency.casefold()), KeyError)
 		
 		
 
 if __name__ == '__main__':
-	r = Item('rent', ['uah', 'usd', 'eur'], correspondingItem = 'wallet')
+	r = Item('rent', ['uah', 'usd', 'eur'], correspondItem = 'wallet')
 	print(r)
 	r.changeAmount('usd', 200)
 	print(r)
-	r.changeAmount('usd', 70, -1)
+	r.changeAmount('usd', '3e')
 	print(r)
 	

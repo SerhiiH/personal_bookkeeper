@@ -87,7 +87,8 @@ class Runtime:
 	def inputTotal(self, *args):
 		try:
 			liabilityItem = args[0]
-			amount = float(args[1])
+			# amount = float(args[1])
+			amount = args[1]
 			if len(args) == 2:
 				liabilityCurrency = 'uah'
 			else:
@@ -152,3 +153,4 @@ class Runtime:
 if __name__ == '__main__':
 	r = Runtime()
 	r.run()
+
