@@ -1,12 +1,8 @@
 from month_item import MonthItem
 
 class Liabilities(MonthItem):
-	def __init__(self):
-		MonthItem.__init__(self, self.__class__.__name__)
-		self.addItem('wallet', 'uah', 'usd', 'eur')
-
-
-
+	def __init__(self, itemTypesList):
+		MonthItem.__init__(self, self.__class__.__name__, itemTypesList)
 
 
 if __name__ == '__main__':

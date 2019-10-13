@@ -3,18 +3,18 @@ from incomes import Incomes
 from liabilities import Liabilities
 
 class Month:
-	def __init__(self, name):
-		self.monthItems = {'expenses': Expenses(), 'incomes': Incomes(), 'liabilities': Liabilities()}
+	def __init__(self, name, expensesItems, incomesItems, liabilitiesItems):
+		self.monthItems = {'expenses': Expenses(expensesItems), 'incomes': Incomes(incomesItems), 'liabilities': Liabilities(liabilitiesItems)}
 		self.name = name.casefold()
 		
 	def __repr__(self):
-		return self.name.upper().center(30, ' ') + '\n' + str(self.items['incomes']) + str(self.items['expenses']) + str(self.items['liabilities']) 
+		return self.name.upper().center(30, ' ') + '\n' + str(self.monthItems['incomes']) + str(self.monthItems['expenses']) + str(self.monthItems['liabilities']) 
 
-	def getMonthItem(self, monthItem):
+	def getItemsGroup(self, monthItem):
 		try:
 			return self.monthItems[monthItem.casefold()]
 		except KeyError:
-			print('ERROR!!! Incorrect Month item name.')
+			print('ERROR in month.py!!! Incorrect Month item name.')
 			return
 	
 

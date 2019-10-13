@@ -1,67 +1,68 @@
 from item import Item
 
 class MonthItem():
-	def __init__(self, name):
+	def __init__(self, name, itemTypesList):
 		self.name = name
 		self.itemTypes = {}
+		for itemType in itemTypesList:
+			self.addItem(itemType)
  		
 	def __repr__(self):
-		string = ''.join([str(item) for item in filter(lambda x: x.getCorrespondingItem() == 'wallet', self.itemTypes.values())])
-		string += ''.join([str(item) for item in filter(lambda x: x.getCorrespondingItem() != 'wallet', self.itemTypes.values())])
+		string = ''.join([str(item) for item in filter(lambda x: x.getCorrespondItem() == 'wallet', self.itemTypes.values())])
+		string += ''.join([str(item) for item in filter(lambda x: x.getCorrespondItem() != 'wallet', self.itemTypes.values())])
 		return '\n' + self.name.capitalize().center(30, '-') + '\n' + string
 		
 	def __iter__(self):
 		for item in self.itemTypes.values():
 			yield item
 
-	def addItem(self, name, *currencies, correspondingItem = ''):
-		name = name.casefold()
-		self.itemTypes[name] = Item(name, currencies, correspondingItem)
+	def addItem(self, itemType):
+		self.itemTypes[itemType.name] = Item(itemType.name, itemType.currency, itemType.correspondItem)
 		
 	def addItemCurrency(self, item, currency):
 		try:
 			self.itemTypes[item.casefold()].addCurrency(currency)
 		except KeyError:
-			print('ERROR!!! Incorrect Item name.')
+			print('ERROR in month_item.py!!! Incorrect Item name.')
 			return
 		
 	def deleteItem(self, item):
 		try:
 			del self.itemTypes[item.casefold()]
 		except KeyError:
-			print('ERROR!!! Incorrect Item name.')
+			print('ERROR in month_item.py!!! Incorrect Item name.')
 			return
 			
 	def deleteItemCurrency(self, item, currency):
 		try:
 			self.itemTypes[item.casefold()].deleteCurrency(currency)
 		except KeyError:
-			print('ERROR!!! Incorrect Item name.')
+			print('ERROR in month_item.py!!! Incorrect Item name.')
 			return
 		
-	def changeItemAmount(self, item, amount, currency = 'uah', sign = 1):
+	def changeItemAmount(self, item, amount, currency):
 		try:
-			self.itemTypes[item.casefold()].changeAmount(currency, amount, sign)
+			self.itemTypes[item.casefold()].changeAmount(currency, amount)
 		except KeyError:
-			print('ERROR!!! Incorrect Item name.')
+			print('ERROR in month_item.py!!! Incorrect Item name.')
 			return
 		except:
-			print('ERROR!!! Incorrect input.')
+			print('ERROR in month_item.py!!! Incorrect input.')
 			return
 	
-	def getItemCorrespondingItem(self, item):
+	def getItemCorrespondItem(self, item):
 		try:
-			return self.itemTypes[item.casefold()].getCorrespondingItem()
+			return self.itemTypes[item.casefold()].getCorrespondItem()
 		except KeyError:
-			print('ERROR!!! Incorrect Item name.')
+			print('ERROR in month_item.py!!! Incorrect Item name.')
 			return
 		
 		
 if __name__ == '__main__':
 	mi = MonthItem('Expenses')
-	mi.addItem('Rent', 'uah', correspondingItem = 'wallet')
-	mi.addItem('TRAVELLING', 'uah', 'usd', 'eur', correspondingItem = 'travelling')
-	mi.addItem('FooD', 'uah', correspondingItem = 'wallet')
+	mi.addItem('Rent', 'uah', correspondItem = 'wallet')
+	mi.addItem('TRAVELLING', 'uah', 'usd', 'eur', correspondItem = 'travelling')
+	mi.addItem('FooD', 'uah', correspondItem = 'wallet')
 	print(mi)
 	print(''.center(30, '*'))
 	
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 	print(mi)
 	print(''.center(30, '*'))
 	
-	print(mi.getItemCorrespondingItem('FOOD'))
+	print(mi.getItemCorrespondItem('FOOD'))
 	print(''.center(30, '*'))
 	
 	for it in mi:

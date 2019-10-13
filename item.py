@@ -1,12 +1,12 @@
 class Item:
-	def __init__(self, name, currencies, correspondingItem):
-		name = name.casefold()
-		currencies = [curr.casefold() for curr in currencies]
-		correspondingItem = correspondingItem.casefold()
+	def __init__(self, name, currencies, correspondItem):
+		name = name
+		currencies = currencies
+		correspondItem = correspondItem
 		
 		self.name = name
 		self.amount = {currency: 0 for currency in currencies}
-		self.correspondingItem = correspondingItem
+		self.correspondItem = correspondItem
 		
 	def __repr__(self):
 		return self.name.capitalize() + ':\n' + ''.join(['{0:>17}: {1:,}\n'.format(curr.upper(), val) for curr, val in self.amount.items()])
@@ -15,23 +15,23 @@ class Item:
 		for value in self.amount.items():
 			yield value 
 		
-	def changeAmount(self, currency, amount, sign = 1):
+	def changeAmount(self, currency, amount):
 		try:
 			currency = currency.casefold()
 			amount = float(amount)
-			self.amount[currency] += amount * sign
+			self.amount[currency] += amount
 		except KeyError:
-			print('ERROR!!! Incorrect Currency name.')
+			print('ERROR in item.py!!! Incorrect Currency name.')
 			return
 		except ValueError:
-			print('ERROR!!! Incorrect amount format.')
+			print('ERROR  in item.py!!! Incorrect amount format.')
 			return
 		except:
-			print('ERROR!!! Incorrect input.')
+			print('ERROR in item.py!!! Incorrect input.')
 			return		
 			
-	def getCorrespondingItem(self):
-		return self.correspondingItem
+	def getCorrespondItem(self):
+		return self.correspondItem
 
 	def getAmount(self, currency):
 		return self.amount[currency.casefold()]
@@ -43,7 +43,7 @@ class Item:
 		try:
 			del self.amount[currency.casefold()]
 		except KeyError:
-			print('ERROR!!! Incorrect Currency name.')
+			print('ERROR in item.py!!! Incorrect Currency name.')
 			return
 		
 		
