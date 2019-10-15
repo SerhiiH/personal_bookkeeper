@@ -26,7 +26,8 @@ class Runtime:
 		self.totalLiabilities = None
 		self.monthHistory = {}
 		self.commands = {'new total': self.newTotal, 'new month': self.newMonth, 'input total': self.inputTotal, 
-			'input month': self.inputCurrent, 'show total': self.showTotal, 'show month': self.showCurrent}
+			'input month': self.inputCurrent, 'show total': self.showTotal, 'show month': self.showCurrent,
+			'add item': self.addItem}
 
 	def run(self):
 		self.prepare()
@@ -65,7 +66,7 @@ class Runtime:
 			return
 			
 		if self.currentMonth:
-			self.monthHistory.append(self.currentMonth) 
+			self.monthHistory[self.currentMonth.name] = self.currentMonth
 		
 		self.currentMonth = Month(args[0], self.getItemsTypesGroup('expenses').values(), self.getItemsTypesGroup('incomes').values(), 
 			self.getItemsTypesGroup('liabilities').values())
@@ -134,8 +135,9 @@ class Runtime:
 	def getItemsTypesGroup(self, itemsTypesGroup):
 		return self.itemsTypesCollection[itemsTypesGroup.casefold()]
 
-		
-
+	def addItem(self):
+		pass
+	
 
 
 if __name__ == '__main__':
