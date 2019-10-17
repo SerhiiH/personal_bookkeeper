@@ -1,12 +1,12 @@
 from items_group import ItemsGroup
 
 class Incomes(ItemsGroup):
-	def __init__(self,itemTypesList):
-		ItemsGroup.__init__(self, self.__class__.__name__, itemTypesList)
+	def __init__(self, itemsTypes):
+		ItemsGroup.__init__(self, self.__class__.__name__, itemsTypes)
 		self.total = 0
 	
 	def __repr__(self):
-		return ItemsGroup.__repr__(self) + '\n{0:13} UAH: {1:,}\n'.format('TOTAL:', self.total)		
+		return ItemsGroup.__repr__(self) + '\n{0:13} UAH: {1:,.2}\n'.format('TOTAL:', self.total)		
 
 	def changeItemAmount(self, item, amount, currency):
 		ItemsGroup.changeItemAmount(self, item, amount, currency)
@@ -15,8 +15,8 @@ class Incomes(ItemsGroup):
 		
 	def countTotal(self):
 		self.total = 0
-		for item in self.itemsCollection.values():
-			if item.getCorrespondItem() == 'wallet':
+		for item in self.itemsList.values():
+			if item.correspondItem == 'wallet':
 				for currency, value in item:
 					if currency == 'uah':
 						self.total += value

@@ -2,47 +2,76 @@ from month import Month
 from liabilities import Liabilities
 from item_type import ItemType
 import functions as f
+import pickle
+
 
 class Runtime:
 	def __init__(self):
-		self.itemsTypesCollection = {
-			'expenses':  {
-			'rent': ItemType('Rent', 'Wallet', 'UAH'), 
-			'food': ItemType('Food', 'Wallet', 'UAH'), 
-			'pocket money': ItemType('Pocket money', 'Wallet', 'UAH'),
-			'travelling': ItemType('Travelling', 'Travelling', 'UAH')
-			}, 
-			'incomes': {
-			'serhii': ItemType('Serhii', 'Wallet', 'UAH'),
-			'alona': ItemType('Alona', 'Wallet', 'UAH')
-			},
-			'liabilities': {
-			'wallet': ItemType('Wallet', '', 'UAH', 'USD', 'EUR'),
-			'travelling': ItemType('Travelling', '', 'UAH', 'USD', 'EUR'),
-			'deposit': ItemType('Deposit', '', 'UAH', 'USD', 'EUR')
-			}
+		self.defaultItemsTypesGroups = {
+			'expenses':  [ItemType('Rent', 'Wallet', 'UAH'), ItemType('Food', 'Wallet', 'UAH'), ItemType('Pocket money', 'Wallet', 'UAH'), 
+				ItemType('Travelling', 'Travelling', 'UAH')], 
+			'incomes': [ItemType('Serhii', 'Wallet', 'UAH'), ItemType('Alona', 'Wallet', 'UAH')],
+			'liabilities': [ItemType('Wallet', '', 'UAH', 'USD', 'EUR'), ItemType('Travelling', '', 'UAH', 'USD', 'EUR'), ItemType('Deposit', '', 'UAH', 'USD', 'EUR')]
 		}
 		self.currentMonth = None
-		self.totalLiabilities = None
-		self.monthHistory = {}
+		self.totalLiab = None
+		self.monthHistory = None
 		self.commands = {'new total': self.newTotal, 'new month': self.newMonth, 'input total': self.inputTotal, 
 			'input month': self.inputCurrent, 'show total': self.showTotal, 'show month': self.showCurrent,
 			'add item': self.addItem}
 
 	def run(self):
-		self.prepare()
-		self.communicate()
+		self.initialize()
+		try:
+			self.communicate()
+		finally:
+			self.finish()
 	
-	def prepare(self):
-		if not self.totalLiabilities:
-			self.totalLiabilities = Liabilities(self.getItemsTypesGroup('liabilities').values())
+	def initialize(self):
+		self.initBasicItemsTypesGroups()
+		self.initTotalLiabs()
+		self.initCurrentMonth()
+		self.initMonthHistory()
 
+	def initBasicItemsTypesGroups(self):
+		try:
+			with open('database/items_types_groups.pkl', 'rb') as fileDB:
+				tmpBasicItemsTypes = pickle.load(fileDB)
+		except EOFError:
+			with open('database/items_types_groups.pkl', 'wb') as fileDB:
+				pickle.dump(self.defaultItemsTypesGroups, fileDB)
+				
+	def initTotalLiabs(self):
+		try:
+			with open('database/total.pkl', 'rb') as fileDB:
+				self.totalLiab = pickle.load(fileDB)
+		except EOFError:
+			try:
+				self.totalLiab = Liabilities(self.getItemsTypesGroup('liabilities'))
+			except EOFError:
+				print('ERROR!!! Items types groups are not set')
+				return
+			
+	def initCurrentMonth(self):
+		try:
+			with open('database/current_month.pkl', 'rb') as fileDB:
+				self.currentMonth = pickle.load(fileDB)
+		except EOFError:
+			print('Current month isn not set')
+
+	def initMonthHistory(self):
+		try:
+			with open('database/month_history.pkl', 'rb') as fileDB:
+				self.monthHistory = pickle.load(fileDB)
+		except EOFError:
+			self.monthHistory = {}
+			
 	def communicate(self):
 		request = input('Enter the request ("q" - quit): ')
 		while request != 'q':
 			self.processRequest(request)
 			request = input('Enter the record ("q" - quit): ')	
-	
+			
 	def processRequest(self, requestString):
 		args = [arg.strip().casefold() for arg in requestString.split(',')]
 		
@@ -58,18 +87,21 @@ class Runtime:
 			return
 		
 	def newTotal(self):
-		self.totalLiabilities = Liabilities(self.getItemsTypesGroup('liabilities').values())
-		
+		self.totalLiab = Liabilities(self.getItemsTypesGroup('liabilities'))
+
 	def newMonth(self, *args):
 		if not args:
 			print('ERROR in runtime.py!!! Month name must be entered.')
 			return
 			
+		if len(args) > 1:
+			print('ERROR in runtime.py!!! Too many agruments')
+			return
+			
 		if self.currentMonth:
 			self.monthHistory[self.currentMonth.name] = self.currentMonth
 		
-		self.currentMonth = Month(args[0], self.getItemsTypesGroup('expenses').values(), self.getItemsTypesGroup('incomes').values(), 
-			self.getItemsTypesGroup('liabilities').values())
+		self.currentMonth = Month(args[0])
 
 	def inputTotal(self, *args):
 		def func():
@@ -80,13 +112,13 @@ class Runtime:
 			else:
 				currency = args[2]
 				
-			self.totalLiabilities.changeItemAmount(item, amount, currency)
+			self.totalLiab.changeItemAmount(item, amount, currency)
 			
 		try:
 			f.execWithException(self.inputTotal, func, ValueError, KeyError, IndexError)
 		except (ValueError, KeyError, IndexError):
 			return
-		
+
 	def inputCurrent(self, *args):
 		if not self.currentMonth:
 			print('"Current Month" record must be created before filling in.')
@@ -110,10 +142,10 @@ class Runtime:
 					amount *= -1
 				itemsGroupLiab = self.currentMonth.getItemsGroup('liabilities')
 				itemsGroupLiab.changeItemAmount(itemCorrespondItem, amount, currency)
-				self.totalLiabilities.changeItemAmount(itemCorrespondItem, amount, currency)
+				self.totalLiab.changeItemAmount(itemCorrespondItem, amount, currency)
 			
 			if itemsGroupName.casefold() == 'liabilities':
-				self.totalLiabilities.changeItemAmount(itemName, amount, currency)
+				self.totalLiab.changeItemAmount(itemName, amount, currency)
 		
 		try:
 			f.execWithException(self.inputCurrent, func, ValueError, IndexError, KeyError)
@@ -121,8 +153,8 @@ class Runtime:
 			return
 
 	def showTotal(self):
-		if self.totalLiabilities:
-			print(self.totalLiabilities)
+		if self.totalLiab:
+			print(self.totalLiab)
 		else:
 			print('"Total Savings" record must be created before being shown.')
 	
@@ -132,12 +164,25 @@ class Runtime:
 		else:
 			print('"Current Month" record must be created before being shown.')
 
-	def getItemsTypesGroup(self, itemsTypesGroup):
-		return self.itemsTypesCollection[itemsTypesGroup.casefold()]
+	def getItemsTypesGroup(self, itemsTypesGroupName):
+		try:
+			with open('database/items_types_groups.pkl', 'rb') as fileDB:
+				itemsTypesGroups = pickle.load(fileDB)
+		except EOFError:
+			print('ERROR!!! Items types groups are not set')
+		else:
+			return itemsTypesGroups[itemsTypesGroupName.casefold()]
 
 	def addItem(self):
 		pass
-	
+
+	def finish(self):
+		with open('database/total.pkl', 'wb') as fileDB:
+			pickle.dump(self.totalLiab, fileDB)
+		with open('database/current_month.pkl', 'wb') as fileDB:
+			pickle.dump(self.currentMonth, fileDB)
+		with open('database/month_history.pkl', 'wb') as fileDB:
+			pickle.dump(self.monthHistory, fileDB)
 
 
 if __name__ == '__main__':

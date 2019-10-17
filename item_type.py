@@ -10,7 +10,7 @@ class ItemType:
 		
 	def changeName(self, name):
 		self._name = name.casefold()
-		
+				
 	@property
 	def correspondItem(self):
 		return self._correspondItem
