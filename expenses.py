@@ -6,7 +6,7 @@ class Expenses(ItemsGroup):
 		self.total = 0
 	
 	def __repr__(self):
-		return ItemsGroup.__repr__(self) + '\n{0:13} UAH: {1:,.2}\n'.format('TOTAL:', self.total)
+		return ItemsGroup.__repr__(self) + '\n{0:13} UAH: {1:,.2f}\n'.format('TOTAL:', self.total)
 		
 	def changeItemAmount(self, item, amount, currency):
 		ItemsGroup.changeItemAmount(self, item, amount, currency)
