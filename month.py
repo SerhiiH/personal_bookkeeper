@@ -24,7 +24,7 @@ class Month:
 			return
 		
 	def __repr__(self):
-		return self.name.upper().center(30, ' ') + '\n' + str(self.itemsGroups['incomes']) + str(self.itemsGroups['expenses']) + str(self.itemsGroups['liabilities']) 
+		return '\n' + self.name.upper().center(30, ' ') + '\n' + str(self.itemsGroups['incomes']) + str(self.itemsGroups['expenses']) + str(self.itemsGroups['liabilities']) 
 
 	def getItemsGroup(self, itemsGroup):
 		return f.execWithException(self.getItemsGroup, lambda: self.itemsGroups[itemsGroup.casefold()], KeyError)

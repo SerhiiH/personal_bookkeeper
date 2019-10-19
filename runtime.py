@@ -3,6 +3,8 @@ from liabilities import Liabilities
 from item_type import ItemType
 import functions as f
 import pickle
+from functools import reduce
+
 
 
 class Runtime:
@@ -106,7 +108,7 @@ class Runtime:
 	def inputTotal(self, *args):
 		def func():
 			item = args[0]
-			amount = args[1]
+			amount = Runtime.reduceAmount(args[1])
 			if len(args) == 2:
 				currency = 'uah'
 			else:
@@ -127,7 +129,7 @@ class Runtime:
 		def func():
 			itemsGroupName = args[0]
 			itemName = args[1]
-			amount = float(args[2])
+			amount = Runtime.reduceAmount(args[2])
 			if len(args) == 3:
 				currency = 'uah'
 			else:
@@ -183,6 +185,10 @@ class Runtime:
 			pickle.dump(self.currentMonth, fileDB)
 		with open('database/month_history.pkl', 'wb') as fileDB:
 			pickle.dump(self.monthHistory, fileDB)
+
+	@staticmethod
+	def reduceAmount(amountString):
+		return reduce(lambda x,y: x + y, map(lambda x: float(x), amountString.split()), 0)
 
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ class Item:
 	def changeAmount(self, currency, amount):
 		def func():
 			curr = currency.casefold()
-			value = float(amount)
+			value = amount
 			self._amount[curr] += value
 		f.execWithException(self.changeAmount, func, KeyError, ValueError)
 			
