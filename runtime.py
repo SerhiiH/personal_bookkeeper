@@ -84,8 +84,8 @@ class Runtime:
 				self.commands[args[0]]()
 			
 		try:
-			f.execWithException(self.processRequest, func, KeyError)
-		except KeyError:
+			f.execWithException(self.processRequest, func, KeyError, TypeError)
+		except (KeyError, TypeError):
 			return
 		
 	def newTotal(self):
