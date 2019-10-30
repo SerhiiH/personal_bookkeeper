@@ -148,10 +148,10 @@ class Runtime:
 			
 			if itemsGroupName.casefold() == 'liabilities':
 				self.totalLiab.changeItemAmount(itemName, amount, currency)
-		
+			
+			Runtime.logTransaction(*args, currency)
 		try:
 			f.execWithException(self.inputCurrent, func, ValueError, IndexError, KeyError)
-			Runtime.logTransaction(args, currency)
 		except (ValueError, IndexError, KeyError):
 			return
 
@@ -193,8 +193,8 @@ class Runtime:
 
 	@staticmethod
 	def logTransaction(*args):
-		with open('database/transactions.txt', 'w') as file:
-			file.write(datetime.today().strftime('%Y-%B-"%d"'))
+		with open('database/transactions.txt', 'a') as file:
+			file.write(datetime.today().strftime('%Y %B "%d"') + ' | ')
 			for arg in args:
 				file.write(arg + ' | ')
 			file.write('\n')
