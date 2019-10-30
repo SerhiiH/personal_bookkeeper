@@ -4,7 +4,7 @@ from item_type import ItemType
 import functions as f
 import pickle
 from functools import reduce
-from datetime import dstetime
+from datetime import datetime
 
 
 class Runtime:
