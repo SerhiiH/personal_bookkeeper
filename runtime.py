@@ -4,7 +4,7 @@ from item_type import ItemType
 import functions as f
 import pickle
 from functools import reduce
-
+from datetime import dstetime
 
 
 class Runtime:
@@ -151,6 +151,7 @@ class Runtime:
 		
 		try:
 			f.execWithException(self.inputCurrent, func, ValueError, IndexError, KeyError)
+			Runtime.logTransaction(args, currency)
 		except (ValueError, IndexError, KeyError):
 			return
 
@@ -190,7 +191,14 @@ class Runtime:
 	def reduceAmount(amountString):
 		return reduce(lambda x,y: x + y, map(lambda x: float(x), amountString.split()), 0)
 
-
+	@staticmethod
+	def logTransaction(*args):
+		with open('database/transactions.txt', 'w') as file:
+			file.write(datetime.today().strftime('%Y-%B-"%d"'))
+			for arg in args:
+				file.write(arg + ' | ')
+			file.write('\n')
+1
 if __name__ == '__main__':
 	r = Runtime()
 	r.run()
