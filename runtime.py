@@ -403,7 +403,7 @@ class Runtime:
 			for arg in args:
 				file.write(arg + ' | ')
 			file.write('\n')
-1
+
 if __name__ == '__main__':
 	r = Runtime()
 	r.run()
