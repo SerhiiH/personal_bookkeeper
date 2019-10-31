@@ -29,7 +29,9 @@ class Month:
 	def getItemsGroup(self, itemsGroup):
 		return f.execWithException(self.getItemsGroup, lambda: self.itemsGroups[itemsGroup.casefold()], KeyError)
 	
-
+	@property
+	def monthName(self):
+		return self.name.capitalize()
 
 
 
