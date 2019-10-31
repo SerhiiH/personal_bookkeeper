@@ -193,7 +193,7 @@ class Runtime:
 
 	def logTransaction(self, *args):
 		with open('database/transactions.txt', 'a') as file:
-			file.write('{0:18} | {1:18} | '.format(datetime.today().strftime('%Y %B "%d"'), self.currentMonth.monthName))
+			file.write('{0:18} | {1:18} | '.format(datetime.today().strftime('%Y %B "%d"'), self.currentMonth.name.capitalize()))
 			for arg in args:
 				file.write('{0:15} | '.format(arg))
 			file.write('\n')
