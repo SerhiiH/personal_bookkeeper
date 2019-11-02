@@ -152,7 +152,7 @@ class Runtime:
 			if len(args) == 3:
 				self.logTransaction(*args, currency)
 			else:
-			self.logTransaction(*args)
+				self.logTransaction(*args)
 			
 		try:
 			f.execWithException(self.inputCurrent, func, ValueError, IndexError, KeyError)
