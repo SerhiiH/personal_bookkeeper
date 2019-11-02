@@ -149,7 +149,11 @@ class Runtime:
 			if itemsGroupName.casefold() == 'liabilities':
 				self.totalLiab.changeItemAmount(itemName, amount, currency)
 			
-			self.logTransaction(*args, currency)
+			if len(args) == 3:
+				self.logTransaction(*args, currency)
+			else:
+			self.logTransaction(*args)
+			
 		try:
 			f.execWithException(self.inputCurrent, func, ValueError, IndexError, KeyError)
 		except (ValueError, IndexError, KeyError):
