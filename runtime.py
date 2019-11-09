@@ -20,7 +20,7 @@ class Runtime:
 		self.monthHistory = None
 		self.commands = {'new total': self.newTotal, 'new month': self.newMonth, 'input total': self.inputTotal, 
 			'input month': self.inputCurrent, 'show total': self.showTotal, 'show month': self.showCurrent,
-			'add item': self.addItem}
+			'add item': self.addItem, 'show transactions': self.showTransactions}
 
 	def run(self):
 		self.initialize()
@@ -201,6 +201,11 @@ class Runtime:
 			for arg in args:
 				file.write('{0:15} | '.format(arg))
 			file.write('\n')
+			
+	def showTransactions(self):
+		with open('database/transactions.txt') as file:
+			for line in file:
+				print(line.strip())
 
 if __name__ == '__main__':
 	r = Runtime()
